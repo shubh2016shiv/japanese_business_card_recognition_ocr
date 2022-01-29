@@ -169,16 +169,16 @@ elif nav_option == "Detect Labels":
 
 elif nav_option == "Perform Japanese OCR":
     ocr_model = get_ocr_model()
-#     if os.path.isdir('./runs'):
-#         extracted_label_imgs = [config['result']['crop_address'],
-#                                 config['result']['crop_company_name'],
-#                                 config['result']['crop_email'],
-#                                 config['result']['crop_fax'],
-#                                 config['result']['crop_full_name'],
-#                                 config['result']['crop_mobile'],
-#                                 config['result']['crop_phone_no'],
-#                                 config['result']['crop_position_name'],
-#                                 config['result']['crop_url']]
+    if os.path.isdir('./runs'):
+        extracted_label_imgs = [config['result']['crop_address'],
+                                config['result']['crop_company_name'],
+                                config['result']['crop_email'],
+                                config['result']['crop_fax'],
+                                config['result']['crop_full_name'],
+                                config['result']['crop_mobile'],
+                                config['result']['crop_phone_no'],
+                                config['result']['crop_position_name'],
+                                config['result']['crop_url']]
 
-#         for i in stqdm(range(len(extracted_label_imgs))):
-#             recognize(ocr_model, extracted_label_imgs[i])
+        for i in stqdm(range(len(extracted_label_imgs))):
+            recognize(ocr_model, extracted_label_imgs[i])
