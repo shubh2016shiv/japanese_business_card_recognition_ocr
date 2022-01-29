@@ -7,6 +7,7 @@ import random
 from PIL import Image
 import shutil
 import easyocr
+from stqdm import stqdm
 
 st.set_page_config(layout="wide")
 st.title("Project - Business Card Recognition Challenge")
@@ -37,7 +38,17 @@ def prepareImageForTesting(file, imagePath=None):
 def get_ocr_model():
     reader = easyocr.Reader(['en', 'ja'], model_storage_directory=config['downloads']['ocr_models_dir'])
     return reader
-    
+
+def recognize(ocr_model_,extracted_img_):
+    try:
+        img = Image.open(extracted_img_)
+        if img is not None:
+            result = ocr_model_.readtext(img)
+            return result
+    except Exception as e:
+        st.error("Failed to detect any text from image due to: ", e)
+        return None
+
 ##################################################################
 
 if nav_option == "Home":
@@ -158,3 +169,16 @@ elif nav_option == "Detect Labels":
 
 elif nav_option == "Perform Japanese OCR":
     ocr_model = get_ocr_model()
+    if os.path.isdir('./runs'):
+        extracted_label_imgs = [config['result']['crop_address'],
+                                config['result']['crop_company_name'],
+                                config['result']['crop_email'],
+                                config['result']['crop_fax'],
+                                config['result']['crop_full_name'],
+                                config['result']['crop_mobile'],
+                                config['result']['crop_phone_no'],
+                                config['result']['crop_position_name'],
+                                config['result']['crop_url']]
+
+        for i in stqdm(range(len(extracted_label_imgs))):
+            recognize(ocr_model, extracted_label_imgs[i])
