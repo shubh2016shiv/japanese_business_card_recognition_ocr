@@ -1,0 +1,3 @@
+Sansan offers a digital business card organization service  based on a system that converts  images from scanned text to machine-coded text. During the scanning process,  the business card is fragmented into as many parts to be scanned as possible for safe and effective data import. Although optical character recognition technology enables the conversion process, it is still  too difficult to achieve the low error rate.
+
+Therefore, Sansan took on the challenge of developing an algorithm that automatically recognizes and labels the elements on the business card.
