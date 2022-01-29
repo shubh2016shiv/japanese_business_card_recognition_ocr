@@ -2,17 +2,40 @@ import streamlit as st
 from configparser import ConfigParser
 import gdown
 import os
+import subprocess
+import random
+from PIL import Image
+import shutil
 
 st.set_page_config(layout="wide")
 st.title("Project - Business Card Recognition Challenge")
-st.subheader("Challenge presented by Sansan Global PTE. LTD. to Recognize labellings on Japanese business card.")
+
 
 nav_option = st.sidebar.selectbox(label="Navigation", options=['Home', "Detect Labels", "Perform Japanese OCR"])
 config = ConfigParser()
 config.read('config.ini')
 
-if nav_option == "Home":
+##################################################################
+# Functions
+def prepareImageForTesting(file, imagePath=None):
+    if imagePath is None:
+        st.image(file)
+        image = Image.open(file)
+    else:
+        st.image(imagePath + file)
+        image = Image.open(imagePath + file)
 
+    if os.path.isdir(config['resources']['detection_folder'] + "businessCard/"):
+        shutil.rmtree(config['resources']['detection_folder'] + "businessCard/")
+        os.mkdir(config['resources']['detection_folder'] + "businessCard/")
+    else:
+        os.mkdir(config['resources']['detection_folder'] + "businessCard/")
+    image.save(config['resources']['detection_folder'] + "businessCard/businessCard.png")
+    
+##################################################################
+
+if nav_option == "Home":
+    st.subheader("Challenge presented by Sansan Global PTE. LTD. to Recognize labellings on Japanese business card.")
     st.image(config['resources']['project_title_img'], use_column_width=False)
     st.write("----")
     st.subheader("Business Problem")
@@ -85,6 +108,45 @@ if nav_option == "Home":
                 st.download_button(label=f"Download {model_2}", data=file, file_name='japanese_g2.pth')
         except Exception as e:
             st.error(e.message)
+elif nav_option == "Detect Labels":
+    st.subheader("Labels Identification on Digital Business Card")
+    detect_option = st.selectbox("Select below options to identify labels on business card",
+                                 ["Show already available Digital Japanese Business Cards", "Upload"])
 
+    if detect_option == "Show already available Digital Japanese Business Cards":
+        IDs = []
+        with open(config['resources']['available_cards']) as f:
+            links = f.readline()
+            links = links.split(",")
+            for link in links:
+                IDs.append(link.split("/")[-2])
+
+        randomIDs = random.sample(IDs, 9)
+        if not os.path.isdir(config['resources']['detection_folder'] + "randomBusinessCards"):
+            os.mkdir(config['resources']['detection_folder'] + "randomBusinessCards")
+
+            for i, randomID in enumerate(randomIDs):
+                gdown.download_file_from_google_drive(randomID,
+                                                      config['resources'][
+                                                          'detection_folder'] + "randomBusinessCards/Business Card " + str(
+                                                          i) + ".png")
+
+        businessCard = st.selectbox("Select One Business Card", ["Business Card " + str(i) + ".png" for i in range(9)])
+        prepareImageForTesting(businessCard, config['resources']['detection_folder'] + "randomBusinessCards/")
+    elif detect_option == "Upload":
+        st.info("You may upload one image from the downloaded zip file")
+        upload_file = st.file_uploader("Upload the Business Card Image", type='png')
+        if upload_file is not None:
+            prepareImageForTesting(upload_file, imagePath=None)
+
+    if st.button("Detect Labels"):
+        with st.spinner("Detection in progress..."):
+            if os.path.isdir('./runs'):
+                shutil.rmtree("./runs")
+
+            detectCommand = "/home/appuser/venv/bin/python ./detect.py --weights ./resources/yolo_model_weights/best.pt --source ./resources/test_image/businessCard/ --img 512 --conf 0.6 --save-crop --save-conf --line-thickness 2 --iou-thres 0.5 --save-txt --name results"
+            p = subprocess.Popen(detectCommand, stdout=subprocess.PIPE, shell=True)
+            p.wait()
+            
 
 
