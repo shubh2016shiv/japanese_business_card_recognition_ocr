@@ -6,6 +6,7 @@ import subprocess
 import random
 from PIL import Image
 import shutil
+import easyocr
 
 st.set_page_config(layout="wide")
 st.title("Project - Business Card Recognition Challenge")
@@ -31,6 +32,11 @@ def prepareImageForTesting(file, imagePath=None):
     else:
         os.mkdir(config['resources']['detection_folder'] + "businessCard/")
     image.save(config['resources']['detection_folder'] + "businessCard/businessCard.png")
+    
+@st.experimental_singleton
+def get_ocr_model():
+    reader = easyocr.Reader(['en', 'ja'], model_storage_directory=config['downloads']['ocr_models_dir'])
+    return reader
     
 ##################################################################
 
@@ -150,4 +156,5 @@ elif nav_option == "Detect Labels":
         st.subheader("Detected Labels and their Scores")
         st.image(config['result']['labelled_img'])
 
-
+elif nav_option == "Perform Japanese OCR":
+    ocr_model = get_ocr_model()
