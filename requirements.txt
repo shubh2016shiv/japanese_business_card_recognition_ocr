@@ -14,3 +14,4 @@ scipy==1.7.1
 seaborn==0.11.2
 easyocr==1.4.1
 stqdm==0.0.4
+psutil==5.9.0
