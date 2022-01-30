@@ -232,3 +232,6 @@ elif nav_option == "Perform Japanese OCR":
             p = subprocess.Popen(detectCommand, stdout=subprocess.PIPE, shell=True)
             p.wait()
             p.terminate()
+            
+            with open("./output.txt",encoding='utf-8',mode='r') as f:
+                st.write(f.read())
