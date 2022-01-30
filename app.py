@@ -227,7 +227,8 @@ elif nav_option == "Perform Japanese OCR":
         st.image(fragment)
         if st.button("Perform OCR"):
             #st.write(recognize(ocr_model,fragment))
-            detectCommand = "easyocr -l ja --detail 0 --paragraph True -f ./runs/detect/results/crops/company_name/businessCard.jpg > ./output.txt"
+            detectCommand = f"easyocr -l ja -f {fragment} > ./output.txt"
+            st.write(detectCommand)
             p = subprocess.Popen(detectCommand, stdout=subprocess.PIPE, shell=True)
             p.wait()
             p.terminate()
