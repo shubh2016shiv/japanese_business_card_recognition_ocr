@@ -10,6 +10,7 @@ import easyocr
 from stqdm import stqdm
 from skimage import io
 import gc
+import psutil
 
 st.set_page_config(layout="wide")
 st.title("Project - Business Card Recognition Challenge")
@@ -225,13 +226,15 @@ elif nav_option == "Perform Japanese OCR":
             fragment = extracted_label_imgs[8]
         
         st.image(fragment)
+        st.sidebar.write(psutil.virtual_memory())
         if st.button("Perform OCR"):
+            
             #st.write(recognize(ocr_model,fragment))
             detectCommand = f"easyocr -l ja -f {fragment} > ./output.txt"
             st.write(detectCommand)
             p = subprocess.Popen(detectCommand, stdout=subprocess.PIPE, shell=True)
             p.wait()
             p.terminate()
-            
+            st.sidebar.write(psutil.virtual_memory())
             with open("./output.txt",encoding='utf-8',mode='r') as f:
                 st.write(f.read())
