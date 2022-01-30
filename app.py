@@ -8,6 +8,7 @@ from PIL import Image
 import shutil
 import easyocr
 from stqdm import stqdm
+from skimage import io
 
 st.set_page_config(layout="wide")
 st.title("Project - Business Card Recognition Challenge")
@@ -41,14 +42,15 @@ def get_ocr_model(ocr_path):
 
 def recognize(ocr_model_,extracted_img_):
     try:
-        img = Image.open(extracted_img_)
-        st.write(img)
-#         if img is not None:
-#             result = ocr_model_.readtext(img,decoder='wordbeamsearch',beamWidth=1)
-#             return result
+        #img = Image.open(extracted_img_)
+        img = io.imread(extracted_img_)
+        #st.write(img)
+        if img is not None:
+            result = ocr_model_.readtext(img,decoder='wordbeamsearch',beamWidth=1)
+            return result
     except Exception as e:
         st.error("Failed to detect any text from image due to: ", e)
-#         return None
+        return None
 
 ##################################################################
 
