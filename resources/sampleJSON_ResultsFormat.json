@@ -1,0 +1,83 @@
+{
+
+	"Business Card": [{
+			"Full Name": "",
+			"Company Name": "",
+			"Position Name": "",
+			"Address": "",
+			"Mobile": "",
+			"Phone Number": "",
+			"Email": "",
+			"Fax": "",
+			"URL": "",
+			"Bounding Box": {
+				"Full Name Location": {
+					"left": "",
+					"top": "",
+					"right": "",
+					"bottom": "",
+					"probability":""
+				},
+				"Company Name Location": {
+					"left": "",
+					"top": "",
+					"right": "",
+					"bottom": "",
+					"probability":""
+				},
+				"Position Name Location": {
+					"left": "",
+					"top": "",
+					"right": "",
+					"bottom": "",
+					"probability":""
+				},
+				"Address Location": {
+					"left": "",
+					"top": "",
+					"right": "",
+					"bottom": "",
+					"probability":""
+				},
+				"Mobile Location": {
+					"left": "",
+					"top": "",
+					"right": "",
+					"bottom": "",
+					"probability":""
+				},
+				"Phone Number Location": {
+					"left": "",
+					"top": "",
+					"right": "",
+					"bottom": "",
+					"probability":""
+				},
+				"Email Location": {
+					"left": "",
+					"top": "",
+					"right": "",
+					"bottom": "",
+					"probability":""
+				},
+				"Fax Location": {
+					"left": "",
+					"top": "",
+					"right": "",
+					"bottom": "",
+					"probability":""
+				},
+				"URL Location": {
+					"left": "",
+					"top": "",
+					"right": "",
+					"bottom": "",
+					"probability":""
+				}
+
+			}
+		}
+
+	]
+
+}
