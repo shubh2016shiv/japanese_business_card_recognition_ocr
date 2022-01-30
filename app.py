@@ -168,17 +168,21 @@ elif nav_option == "Detect Labels":
         st.image(config['result']['labelled_img'])
 
 elif nav_option == "Perform Japanese OCR":
-    if not os.path.exists(config['downloads']['ocr_models_dir'] + "/" + 'craft_mlt_25k.pth'):
-        with st.spinner("Downloading OCR model: 'craft_mlt_25k.pth'"):
-            gdown.download_file_from_google_drive('1tWxsXULB1bBGjRdroDU3BpRhc4PqtpW-',
-                                                  config['downloads'][
-                                                      'ocr_models_dir'] + "/" + 'craft_mlt_25k.pth')
-
-    if not os.path.exists(config['downloads']['ocr_models_dir'] + "/" + 'japanese_g2.pth'):
-        with st.spinner("Downloading OCR model: 'japanese_g2.pth'"):
-            gdown.download_file_from_google_drive('10hpsSpyDDnBWh8jOh_l86tlPXWUzoYFw',
-                                                  config['downloads'][
-                                                      'ocr_models_dir'] + "/" + 'japanese_g2.pth')
+    
+    if not os.path.isdir(config['downloads']['ocr_models_dir']):
+        os.makedirs(config['downloads']['ocr_models_dir'])
+    
+        if not os.path.exists(config['downloads']['ocr_models_dir'] + "/" + 'craft_mlt_25k.pth'):
+            with st.spinner("Downloading OCR model: 'craft_mlt_25k.pth'"):
+                gdown.download_file_from_google_drive('1tWxsXULB1bBGjRdroDU3BpRhc4PqtpW-',
+                                                      config['downloads'][
+                                                          'ocr_models_dir'] + "/" + 'craft_mlt_25k.pth')
+    
+        if not os.path.exists(config['downloads']['ocr_models_dir'] + "/" + 'japanese_g2.pth'):
+            with st.spinner("Downloading OCR model: 'japanese_g2.pth'"):
+                gdown.download_file_from_google_drive('10hpsSpyDDnBWh8jOh_l86tlPXWUzoYFw',
+                                                      config['downloads'][
+                                                          'ocr_models_dir'] + "/" + 'japanese_g2.pth')
     ocr_model = get_ocr_model(config['downloads']['ocr_models_dir'])
     if os.path.isdir('./runs'):
         extracted_label_imgs = [config['result']['crop_address'],
