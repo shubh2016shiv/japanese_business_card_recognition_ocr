@@ -34,9 +34,9 @@ def prepareImageForTesting(file, imagePath=None):
         os.mkdir(config['resources']['detection_folder'] + "businessCard/")
     image.save(config['resources']['detection_folder'] + "businessCard/businessCard.png")
     
-@st.experimental_singleton
-def get_ocr_model():
-    reader = easyocr.Reader(['en', 'ja'], model_storage_directory=config['downloads']['ocr_models_dir'],gpu=False,quantize=False,download_enabled=False)
+@st.experimental_singleton(suppress_st_warning=True)
+def get_ocr_model(ocr_path):
+    reader = easyocr.Reader(['en', 'ja'], user_network_directory=ocr_path,gpu=False,quantize=False,download_enabled=False)
     return reader
 
 def recognize(ocr_model_,extracted_img_):
@@ -168,7 +168,18 @@ elif nav_option == "Detect Labels":
         st.image(config['result']['labelled_img'])
 
 elif nav_option == "Perform Japanese OCR":
-    ocr_model = get_ocr_model()
+    if not os.path.exists(config['downloads']['ocr_models_dir'] + "/" + 'craft_mlt_25k.pth'):
+        with st.spinner("Downloading OCR model: 'craft_mlt_25k.pth'"):
+            gdown.download_file_from_google_drive('1tWxsXULB1bBGjRdroDU3BpRhc4PqtpW-',
+                                                  config['downloads'][
+                                                      'ocr_models_dir'] + "/" + 'craft_mlt_25k.pth')
+
+    if not os.path.exists(config['downloads']['ocr_models_dir'] + "/" + 'japanese_g2.pth'):
+        with st.spinner("Downloading OCR model: 'japanese_g2.pth'"):
+            gdown.download_file_from_google_drive('10hpsSpyDDnBWh8jOh_l86tlPXWUzoYFw',
+                                                  config['downloads'][
+                                                      'ocr_models_dir'] + "/" + 'japanese_g2.pth')
+    ocr_model = get_ocr_model(config['downloads']['ocr_models_dir'])
     if os.path.isdir('./runs'):
         extracted_label_imgs = [config['result']['crop_address'],
                                 config['result']['crop_company_name'],
@@ -180,6 +191,28 @@ elif nav_option == "Perform Japanese OCR":
                                 config['result']['crop_position_name'],
                                 config['result']['crop_url']]
 
-        for i in stqdm(range(len(extracted_label_imgs))):
-            st.write(recognize(ocr_model, extracted_label_imgs[i]))
-        #recognize(ocr_model, config['result']['crop_address'])
+        extracted_label = st.selectbox(label="Extracted Fragments",options=[
+            "Address","Company Name","Email","Fax","Full Name","Mobile","Phone Number","Position Number","URL"
+        ])
+
+        if extracted_label == "Address":
+            fragment = extracted_label_imgs[0]
+        elif extracted_label == "Company Name":
+            fragment = extracted_label_imgs[1]
+        elif extracted_label == "Email":
+            fragment = extracted_label_imgs[2]
+        elif extracted_label == "Fax":
+            fragment = extracted_label_imgs[3]
+        elif extracted_label == "Full Name":
+            fragment = extracted_label_imgs[4]
+        elif extracted_label == "Mobile":
+            fragment = extracted_label_imgs[5]
+        elif extracted_label == "Phone Number":
+            fragment = extracted_label_imgs[6]
+        elif extracted_label == "Position Number":
+            fragment = extracted_label_imgs[7]
+        elif extracted_label == "URL":
+            fragment = extracted_label_imgs[8]
+
+
+        st.image(fragment)
