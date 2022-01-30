@@ -36,14 +36,14 @@ def prepareImageForTesting(file, imagePath=None):
     
 @st.experimental_singleton
 def get_ocr_model():
-    reader = easyocr.Reader(['en', 'ja'], model_storage_directory=config['downloads']['ocr_models_dir'],gpu=False,quantize=False)
+    reader = easyocr.Reader(['en', 'ja'], model_storage_directory=config['downloads']['ocr_models_dir'],gpu=False,quantize=False,download_enabled=False)
     return reader
 
 def recognize(ocr_model_,extracted_img_):
     try:
         img = Image.open(extracted_img_)
         if img is not None:
-            result = ocr_model_.readtext(img,batch_size=2)
+            result = ocr_model_.readtext_batched(img)
             return result
     except Exception as e:
         st.error("Failed to detect any text from image due to: ", e)
