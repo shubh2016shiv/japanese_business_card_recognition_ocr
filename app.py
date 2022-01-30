@@ -180,6 +180,6 @@ elif nav_option == "Perform Japanese OCR":
                                 config['result']['crop_position_name'],
                                 config['result']['crop_url']]
 
-        #for i in stqdm(range(len(extracted_label_imgs))):
-            #recognize(ocr_model, extracted_label_imgs[i])
-        recognize(ocr_model, config['result']['crop_address'])
+        for i in stqdm(range(len(extracted_label_imgs))):
+            st.write(recognize(ocr_model, extracted_label_imgs[i]))
+        #recognize(ocr_model, config['result']['crop_address'])
