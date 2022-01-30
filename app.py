@@ -50,7 +50,7 @@ def recognize(ocr_model_,extracted_img_):
         if img is not None:
             gc.collect()
             result = ocr_model_.readtext_batched(img, decoder='beamsearch', beamWidth=1,detail=False,paragraph=False)
-            return result
+            return " ".join(result[0])
     except Exception as e:
         st.error("Failed to detect any text from image due to: ", e)
         return None
@@ -226,8 +226,10 @@ elif nav_option == "Perform Japanese OCR":
             fragment = extracted_label_imgs[8]
         
         st.image(fragment)
+        ja_font = st.sidebar.radio(label="Japanese Fonts",options=['游明朝','Yu Gothic','Yu Mincho','游ゴシック'])
         if st.button("Perform OCR"):
-            
-            st.write(recognize(ocr_model,fragment))
+            text = recognize(ocr_model,fragment)
+            text = f'<p style="font-family:{ja_font}; color:Green; font-size: 50px;">{text}</p>'
+            st.markdown(text, unsafe_allow_html=True)
     else:
         st.info("First Detect the fragments of Japanese Business Card using Yolo-V5 model. Therefore, first Navigate to 'Detect and Fragment Labels' from Sidebar and then come back here.")
