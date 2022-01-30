@@ -132,7 +132,8 @@ if nav_option == "Home":
         except Exception as e:
             st.error(e.message)
 elif nav_option == "Detect and Fragment Labels":
-    st.subheader("Labels Identification on Digital Business Card")
+    st.write("-"*10)
+    st.subheader("Identification and Fragmentation of Labels on Digital Business Card using Pre-trained Yolo-V5 Model Pipeline")
     detect_option = st.selectbox("Select below options to identify labels on business card",
                                  ["Show already available Digital Japanese Business Cards", "Upload"])
 
@@ -175,6 +176,8 @@ elif nav_option == "Detect and Fragment Labels":
         st.image(config['result']['labelled_img'])
 
 elif nav_option == "Perform Japanese OCR":
+    st.write("-"*10)
+    st.subheader("Recognition of Japanese and English text on Extracted Fragment from Business Cards using EasyOCR ")
     gc.collect()
     if not os.path.isdir(config['downloads']['ocr_models_dir']):
         os.makedirs(config['downloads']['ocr_models_dir'])
