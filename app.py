@@ -9,6 +9,7 @@ import shutil
 import easyocr
 from stqdm import stqdm
 from skimage import io
+import gc
 
 st.set_page_config(layout="wide")
 st.title("Project - Business Card Recognition Challenge")
@@ -172,7 +173,7 @@ elif nav_option == "Detect Labels":
         st.image(config['result']['labelled_img'])
 
 elif nav_option == "Perform Japanese OCR":
-    
+    gc.collect()
     if not os.path.isdir(config['downloads']['ocr_models_dir']):
         os.makedirs(config['downloads']['ocr_models_dir'])
     
@@ -221,7 +222,6 @@ elif nav_option == "Perform Japanese OCR":
             fragment = extracted_label_imgs[7]
         elif extracted_label == "URL":
             fragment = extracted_label_imgs[8]
-
-
+        
         st.image(fragment)
         st.write(recognize(ocr_model,fragment))
