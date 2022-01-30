@@ -42,12 +42,13 @@ def get_ocr_model(ocr_path):
 def recognize(ocr_model_,extracted_img_):
     try:
         img = Image.open(extracted_img_)
-        if img is not None:
-            result = ocr_model_.readtext(img,decoder='beamsearch',beamWidth=1)
-            return result
+        st.write(img)
+#         if img is not None:
+#             result = ocr_model_.readtext(img,decoder='wordbeamsearch',beamWidth=1)
+#             return result
     except Exception as e:
         st.error("Failed to detect any text from image due to: ", e)
-        return None
+#         return None
 
 ##################################################################
 
@@ -164,6 +165,7 @@ elif nav_option == "Detect Labels":
             detectCommand = "/home/appuser/venv/bin/python ./detect.py --weights ./resources/yolo_model_weights/best.pt --source ./resources/test_image/businessCard/ --img 512 --conf 0.6 --save-crop --save-conf --line-thickness 2 --iou-thres 0.5 --save-txt --name results"
             p = subprocess.Popen(detectCommand, stdout=subprocess.PIPE, shell=True)
             p.wait()
+            p.terminate()
         st.subheader("Detected Labels and their Scores")
         st.image(config['result']['labelled_img'])
 
