@@ -43,7 +43,7 @@ def recognize(ocr_model_,extracted_img_):
     try:
         img = Image.open(extracted_img_)
         if img is not None:
-            result = ocr_model_.readtext(img,decoder='beamsearch')
+            result = ocr_model_.readtext(img,decoder='beamsearch',beamWidth=1)
             return result
     except Exception as e:
         st.error("Failed to detect any text from image due to: ", e)
