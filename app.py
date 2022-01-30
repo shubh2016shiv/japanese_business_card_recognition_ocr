@@ -220,3 +220,4 @@ elif nav_option == "Perform Japanese OCR":
 
 
         st.image(fragment)
+        st.write(recognize(ocr_model,fragment))
