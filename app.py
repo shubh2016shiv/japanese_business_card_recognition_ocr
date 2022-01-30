@@ -16,7 +16,7 @@ st.set_page_config(layout="wide")
 st.title("Project - Business Card Recognition Challenge")
 
 
-nav_option = st.sidebar.selectbox(label="Navigation", options=['Home', "Detect Labels", "Perform Japanese OCR"])
+nav_option = st.sidebar.selectbox(label="Navigation", options=['Home', "Detect and Fragment Labels", "Perform Japanese OCR"])
 config = ConfigParser()
 config.read('config.ini')
 
@@ -131,7 +131,7 @@ if nav_option == "Home":
                 st.download_button(label=f"Download {model_2}", data=file, file_name='japanese_g2.pth')
         except Exception as e:
             st.error(e.message)
-elif nav_option == "Detect Labels":
+elif nav_option == "Detect and Fragment Labels":
     st.subheader("Labels Identification on Digital Business Card")
     detect_option = st.selectbox("Select below options to identify labels on business card",
                                  ["Show already available Digital Japanese Business Cards", "Upload"])
