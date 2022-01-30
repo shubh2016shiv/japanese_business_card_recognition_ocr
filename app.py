@@ -225,4 +225,5 @@ elif nav_option == "Perform Japanese OCR":
             fragment = extracted_label_imgs[8]
         
         st.image(fragment)
-        st.write(recognize(ocr_model,fragment))
+        if st.button("Perform OCR"):
+            st.write(recognize(ocr_model,fragment))
