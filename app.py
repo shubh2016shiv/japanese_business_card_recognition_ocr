@@ -203,7 +203,7 @@ elif nav_option == "Perform Japanese OCR":
                                 config['result']['crop_url']]
 
         extracted_label = st.selectbox(label="Extracted Fragments",options=[
-            "Address","Company Name","Email","Fax","Full Name","Mobile","Phone Number","Position Number","URL"
+            "Address","Company Name","Email","Fax","Full Name","Mobile","Phone Number","Position","URL"
         ])
 
         if extracted_label == "Address":
@@ -220,7 +220,7 @@ elif nav_option == "Perform Japanese OCR":
             fragment = extracted_label_imgs[5]
         elif extracted_label == "Phone Number":
             fragment = extracted_label_imgs[6]
-        elif extracted_label == "Position Number":
+        elif extracted_label == "Position":
             fragment = extracted_label_imgs[7]
         elif extracted_label == "URL":
             fragment = extracted_label_imgs[8]
@@ -229,24 +229,5 @@ elif nav_option == "Perform Japanese OCR":
         if st.button("Perform OCR"):
             
             st.write(recognize(ocr_model,fragment))
-#             detectCommand = f"easyocr -l ja -f {fragment} > ./output.txt"
-#             st.write(detectCommand)
-#             p = subprocess.Popen(detectCommand, stdout=subprocess.PIPE, shell=True)
-#             p.wait()
-#             p.terminate()
-#             st.sidebar.write(psutil.virtual_memory())
-#             with open("./output.txt",encoding='utf-8',mode='r') as f:
-#                 st.write(f.read())
-                
-#             import sys
-#             def sizeof_fmt(num, suffix='B'):
-#                 ''' by Fred Cirera,  https://stackoverflow.com/a/1094933/1870254, modified'''
-#                 for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
-#                     if abs(num) < 1024.0:
-#                         return "%3.1f %s%s" % (num, unit, suffix)
-#                     num /= 1024.0
-#                 return "%.1f %s%s" % (num, 'Yi', suffix)
-
-#             for name, size in sorted(((name, sys.getsizeof(value)) for name, value in locals().items()),
-#                                      key= lambda x: -x[1])[:10]:
-#                 st.write("{:>30}: {:>8}".format(name, sizeof_fmt(size)))
+    else:
+        st.info("First Detect the fragments of Japanese Business Card using Yolo-V5 model. Therefore, first Navigate to 'Detect and Fragment Labels' from Sidebar and then come back here.")
