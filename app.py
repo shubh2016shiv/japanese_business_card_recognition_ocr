@@ -47,7 +47,8 @@ def recognize(ocr_model_,extracted_img_):
         img = io.imread(extracted_img_)
         #st.write(img)
         if img is not None:
-            result = ocr_model_.readtext(img,decoder='wordbeamsearch',beamWidth=1)
+            gc.collect()
+            result = ocr_model_.readtext_batched(img, decoder='beamsearch', beamWidth=1,detail=False,paragraph=False)
             return result
     except Exception as e:
         st.error("Failed to detect any text from image due to: ", e)
