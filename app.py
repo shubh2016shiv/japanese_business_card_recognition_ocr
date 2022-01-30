@@ -11,6 +11,7 @@ from stqdm import stqdm
 from skimage import io
 import gc
 from japaneseOCR import JapaneseOCR
+import json
 
 st.set_page_config(layout="wide")
 st.title("Project - Business Card Recognition Challenge")
@@ -55,6 +56,40 @@ def recognize(ocr_model_,extracted_img_):
         st.error("Failed to detect any text from image due to: ", e)
         return None
 
+def getBoundingBoxPos(imgWidth, imgHeight):
+    labelIndexDict = {0: 'companyName', 1: 'fullName', 2: 'positionName', 3: 'address', 4: 'phoneNumber', 5: 'fax',
+                      6: 'mobile', 7: 'email', 8: 'url'}
+    labelsDict = {}
+    with open("./runs/detect/results/labels/businessCard.txt") as f:
+        labelFile = f.readlines()
+
+    for detectedLabel in labelFile:
+        items = detectedLabel[:-2].split(" ")
+        xcen = float(items[1])
+        ycen = float(items[2])
+        w = float(items[3])
+        h = float(items[4])
+
+        left = (xcen - w / 2.) * imgWidth;
+        right = (xcen + w / 2.) * imgWidth;
+        top = (ycen - h / 2.) * imgHeight;
+        bottom = (ycen + h / 2.) * imgHeight;
+
+        labelsDict[labelIndexDict[int(items[0])]] = {'left': left, 'right': right, 'top': top, 'bottom': bottom,
+                                                     'probability': float(items[5])}
+
+    return labelsDict
+
+def write_json(target_path, target_file, data):
+    if not os.path.exists(target_path):
+        try:
+            os.makedirs(target_path)
+        except Exception as e:
+            print(e)
+            raise
+    with open(os.path.join(target_path, target_file), 'w') as f:
+        json.dump(data, f)    
+    
 ##################################################################
 
 if nav_option == "Home":
@@ -232,13 +267,13 @@ elif nav_option == "Perform Japanese OCR":
         st.sidebar.info("Japanese text formatting options")
         ja_font = st.sidebar.radio(label="Japanese Fonts",options=['游明朝','Yu Gothic','Yu Mincho','游ゴシック'])
         font_size = st.sidebar.slider(label="Font Size (px)", min_value=30,max_value=50,value=40,step=1)
-        if st.button("Perform OCR"):
+        if st.button("Perform OCR on selected fragment"):
             text = recognize(ocr_model,fragment)
             text = f'<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{text}</p>'
             st.markdown(text, unsafe_allow_html=True)
 
         st.write("-"*10)
-        if st.sidebar.button("Show Complete OCR Result and Download it in JSON Format"):
+        if st.sidebar.button("Show Complete OCR Result"):
             jOCR = JapaneseOCR(ocr_model=ocr_model,extracted_images=extracted_label_imgs)
             jOCR.recognize()
 
@@ -308,5 +343,147 @@ elif nav_option == "Perform Japanese OCR":
                 text = f'''<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{recognizedLabels['url']}</p>'''
                 st.markdown(text, unsafe_allow_html=True)
                 st.image(config['result']['crop_url'])
+                
+            jsonExpander = st.expander("Show and Download the results in JSON",expanded=True)
+
+            with jsonExpander:
+                col1, col2 = st.columns(2)
+                with col1:
+                    with open(config['result']['dummy_json_path']) as f:
+                        jsonFile = f.read()
+
+                    labelledBusinessCard = io.imread(config['result']['labelled_img'])
+                    im_height = labelledBusinessCard.shape[0]
+                    im_width = labelledBusinessCard.shape[1]
+                    labelsDict = getBoundingBoxPos(im_width, im_height)
+
+                    jsonResult = json.loads(jsonFile)
+
+                    jsonResult['Business Card'][0]["Full Name"] = jOCR.detections['fullName']
+                    jsonResult['Business Card'][0]["Company Name"] = jOCR.detections['companyName']
+                    jsonResult['Business Card'][0]["Position Name"] = jOCR.detections['positionName']
+                    jsonResult['Business Card'][0]["Address"] = jOCR.detections['address']
+                    jsonResult['Business Card'][0]["Mobile"] = jOCR.detections['mobile']
+                    jsonResult['Business Card'][0]["Phone Number"] = jOCR.detections['phoneNumber']
+                    jsonResult['Business Card'][0]["Email"] = jOCR.detections['email']
+                    jsonResult['Business Card'][0]["Fax"] = jOCR.detections['fax']
+                    jsonResult['Business Card'][0]["URL"] = jOCR.detections['url']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Full Name Location"]["left"] = \
+                        labelsDict['fullName'][
+                            'left']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Full Name Location"]["top"] = \
+                        labelsDict['fullName']['top']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Full Name Location"]["right"] = \
+                        labelsDict['fullName'][
+                            'right']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Full Name Location"]["bottom"] = \
+                        labelsDict['fullName'][
+                            'bottom']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Full Name Location"]["probability"] = \
+                        labelsDict['fullName']['probability']
+
+                    jsonResult['Business Card'][0]["Bounding Box"]["Company Name Location"]["left"] = \
+                        labelsDict['companyName']['left']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Company Name Location"]["top"] = \
+                        labelsDict['companyName']['top']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Company Name Location"]["right"] = \
+                        labelsDict['companyName']['right']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Company Name Location"]["bottom"] = \
+                        labelsDict['companyName']['bottom']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Company Name Location"]["probability"] = \
+                        labelsDict['companyName']['probability']
+
+                    jsonResult['Business Card'][0]["Bounding Box"]["Position Name Location"]["left"] = \
+                        labelsDict['positionName']['left']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Position Name Location"]["top"] = \
+                        labelsDict['positionName']['top']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Position Name Location"]["right"] = \
+                        labelsDict['positionName']['right']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Position Name Location"]["bottom"] = \
+                        labelsDict['positionName']['bottom']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Position Name Location"]["probability"] = \
+                        labelsDict['positionName']['probability']
+
+                    jsonResult['Business Card'][0]["Bounding Box"]["Address Location"]["left"] = labelsDict['address'][
+                        'left']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Address Location"]["top"] = labelsDict['address'][
+                        'top']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Address Location"]["right"] = labelsDict['address'][
+                        'right']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Address Location"]["bottom"] = \
+                        labelsDict['address']['bottom']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Address Location"]["probability"] = \
+                        labelsDict['address']['probability']
+
+                    jsonResult['Business Card'][0]["Bounding Box"]["Mobile Location"]["left"] = labelsDict['mobile'][
+                        'left']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Mobile Location"]["top"] = labelsDict['mobile'][
+                        'top']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Mobile Location"]["right"] = labelsDict['mobile'][
+                        'right']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Mobile Location"]["bottom"] = labelsDict['mobile'][
+                        'bottom']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Mobile Location"]["probability"] = \
+                        labelsDict['mobile']['probability']
+
+                    jsonResult['Business Card'][0]["Bounding Box"]["Phone Number Location"]["left"] = \
+                        labelsDict['phoneNumber'][
+                            'left']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Phone Number Location"]["top"] = \
+                        labelsDict['phoneNumber'][
+                            'top']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Phone Number Location"]["right"] = \
+                        labelsDict['phoneNumber']['right']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Phone Number Location"]["bottom"] = \
+                        labelsDict['phoneNumber']['bottom']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Phone Number Location"]["probability"] = \
+                        labelsDict['phoneNumber']['probability']
+
+                    jsonResult['Business Card'][0]["Bounding Box"]["Email Location"]["left"] = labelsDict['email'][
+                        'left']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Email Location"]["top"] = labelsDict['email']['top']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Email Location"]["right"] = labelsDict['email'][
+                        'right']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Email Location"]["bottom"] = labelsDict['email'][
+                        'bottom']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Email Location"]["probability"] = \
+                        labelsDict['email'][
+                            'probability']
+
+                    jsonResult['Business Card'][0]["Bounding Box"]["Fax Location"]["left"] = labelsDict['fax']['left']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Fax Location"]["top"] = labelsDict['fax']['top']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Fax Location"]["right"] = labelsDict['fax']['right']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Fax Location"]["bottom"] = labelsDict['fax'][
+                        'bottom']
+                    jsonResult['Business Card'][0]["Bounding Box"]["Fax Location"]["probability"] = labelsDict['fax'][
+                        'probability']
+
+                    jsonResult['Business Card'][0]["Bounding Box"]["URL Location"]["left"] = labelsDict['url']['left']
+                    jsonResult['Business Card'][0]["Bounding Box"]["URL Location"]["top"] = labelsDict['url']['top']
+                    jsonResult['Business Card'][0]["Bounding Box"]["URL Location"]["right"] = labelsDict['url']['right']
+                    jsonResult['Business Card'][0]["Bounding Box"]["URL Location"]["bottom"] = labelsDict['url'][
+                        'bottom']
+                    jsonResult['Business Card'][0]["Bounding Box"]["URL Location"]["probability"] = labelsDict['url'][
+                        'probability']
+
+                    if os.path.exists(config['result']['json_result_path']):
+                        shutil.rmtree(config['result']['json_result_path'] + "/")
+                        write_json(config['result']['json_result_path'], 'businessCardLabels.json', jsonResult)
+                    else:
+                        write_json(config['result']['json_result_path'], 'businessCardLabels.json', jsonResult)
+
+                    with open(config['result']['json_result_path'] + "/businessCardLabels.json") as f:
+                        jsonFile = f.read()
+
+                    jsonResult = json.loads(jsonFile)
+                    st.json(jsonResult)
+                    with open(config['result']['json_result_path'] + "/businessCardLabels.json", "rb") as file:
+                        btn = st.sidebar.download_button(
+                            label="Download Result in JSON",
+                            data=file,
+                            file_name="businessCardLabels.json")
+                with col2:
+                    st.subheader("Reference for (left,top) and (right,bottom) for a label")
+                    st.image("./resources/positionReference.png")
     else:
         st.info("First Detect the fragments of Japanese Business Card using Yolo-V5 model. Therefore, first Navigate to 'Detect and Fragment Labels' from Sidebar and then come back here.")
