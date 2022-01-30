@@ -34,9 +34,9 @@ def prepareImageForTesting(file, imagePath=None):
         os.mkdir(config['resources']['detection_folder'] + "businessCard/")
     image.save(config['resources']['detection_folder'] + "businessCard/businessCard.png")
     
-@st.experimental_singleton(suppress_st_warning=True)
+@st.cache
 def get_ocr_model(ocr_path):
-    reader = easyocr.Reader(['en', 'ja'], user_network_directory=ocr_path,gpu=False,quantize=False,download_enabled=False)
+    reader = easyocr.Reader(['en', 'ja'], model_storage_directory=ocr_path,gpu=False,quantize=False,download_enabled=False)
     return reader
 
 def recognize(ocr_model_,extracted_img_):
