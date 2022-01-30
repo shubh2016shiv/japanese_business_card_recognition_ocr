@@ -10,7 +10,7 @@ import easyocr
 from stqdm import stqdm
 from skimage import io
 import gc
-import psutil
+from japaneseOCR import JapaneseOCR
 
 st.set_page_config(layout="wide")
 st.title("Project - Business Card Recognition Challenge")
@@ -229,10 +229,84 @@ elif nav_option == "Perform Japanese OCR":
             fragment = extracted_label_imgs[8]
         
         st.image(fragment)
+        st.sidebar.info("Japanese text formatting options")
         ja_font = st.sidebar.radio(label="Japanese Fonts",options=['游明朝','Yu Gothic','Yu Mincho','游ゴシック'])
+        font_size = st.sidebar.slider(label="Font Size (px)", min_value=30,max_value=50,value=40,step=1)
         if st.button("Perform OCR"):
             text = recognize(ocr_model,fragment)
-            text = f'<p style="font-family:{ja_font}; color:Green; font-size: 50px;">{text}</p>'
+            text = f'<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{text}</p>'
             st.markdown(text, unsafe_allow_html=True)
+
+        st.write("-"*10)
+        if st.sidebar.button("Show Complete OCR Result and Download it in JSON Format"):
+            jOCR = JapaneseOCR(ocr_model=ocr_model,extracted_images=extracted_label_imgs)
+            jOCR.recognize()
+
+            recognizedLabels = jOCR.detections
+
+            labelExpander = st.expander("Expand to reveal detected labels and their bounding box on Business Card")
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                fullNameExpander = st.expander("Expand to reveal detected Full Name as text and cropped image")
+            with col2:
+                companyNameExpander = st.expander("Expand to reveal detected Company Name as text and cropped image")
+            with col3:
+                positionExpander = st.expander("Expand to reveal detected Position as text and cropped image")
+            col1, col2, col3 = st.columns(3)
+
+            with col1:
+                addressExpander = st.expander("Expand to reveal detected Address as text and cropped image")
+            with col2:
+                mobileExpander = st.expander("Expand to reveal detected Mobile as text and cropped image")
+            with col3:
+                phoneNumberExpander = st.expander("Expand to reveal detected Phone Number as text and cropped image")
+
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                emailExpander = st.expander("Expand to reveal detected Email as text and cropped image")
+            with col2:
+                faxExpander = st.expander("Expand to reveal detected Fax as text and cropped image")
+            with col3:
+                urlExpander = st.expander("Expand to reveal detected URL as text and cropped image")
+
+            with labelExpander:
+                st.image(config['result']['labelled_img'])
+
+            with fullNameExpander:
+                text = f'''<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{recognizedLabels['fullName']}</p>'''
+                st.markdown(text, unsafe_allow_html=True)
+                st.image(config['result']['crop_full_name'])
+            with companyNameExpander:
+                text = f'''<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{recognizedLabels['companyName']}</p>'''
+                st.markdown(text, unsafe_allow_html=True)
+                st.image(config['result']['crop_company_name'])
+            with positionExpander:
+                text = f'''<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{recognizedLabels['positionName']}</p>'''
+                st.markdown(text, unsafe_allow_html=True)
+                st.image(config['result']['crop_position_name'])
+            with addressExpander:
+                text = f'''<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{recognizedLabels['address']}</p>'''
+                st.markdown(text, unsafe_allow_html=True)
+                st.image(config['result']['crop_address'])
+            with mobileExpander:
+                text = f'''<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{recognizedLabels['mobile']}</p>'''
+                st.markdown(text, unsafe_allow_html=True)
+                st.image(config['result']['crop_mobile'])
+            with phoneNumberExpander:
+                text = f'''<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{recognizedLabels['phoneNumber']}</p>'''
+                st.markdown(text, unsafe_allow_html=True)
+                st.image(config['result']['crop_phone_no'])
+            with emailExpander:
+                text = f'''<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{recognizedLabels['email']}</p>'''
+                st.markdown(text, unsafe_allow_html=True)
+                st.image(config['result']['crop_email'])
+            with faxExpander:
+                text = f'''<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{recognizedLabels['fax']}</p>'''
+                st.markdown(text, unsafe_allow_html=True)
+                st.image(config['result']['crop_fax'])
+            with urlExpander:
+                text = f'''<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{recognizedLabels['url']}</p>'''
+                st.markdown(text, unsafe_allow_html=True)
+                st.image(config['result']['crop_url'])
     else:
         st.info("First Detect the fragments of Japanese Business Card using Yolo-V5 model. Therefore, first Navigate to 'Detect and Fragment Labels' from Sidebar and then come back here.")
