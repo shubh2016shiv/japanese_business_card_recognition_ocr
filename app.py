@@ -126,8 +126,7 @@ if nav_option == "Home":
         os.makedirs(config['downloads']['downloads_folder'])
 
     download_option = st.selectbox(label="Download Options",
-                                   options=["Show Training Logs",
-                                            "Jupyter Notebook: Read, Process and Train YOLO-V5 model",
+                                   options=["Jupyter Notebook: Read, Process and Train YOLO-V5 model",
                                             "Set of Business Cards (.zip)",
                                             "Best Yolo-V5 Model",
                                             "Japanese OCR model"])
