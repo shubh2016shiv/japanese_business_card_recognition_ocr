@@ -102,6 +102,22 @@ if nav_option == "Home":
 
     st.write(obj)
     st.write("Link to the official challenge is [🔗](https://signate.jp/competitions/26)")
+    
+    st.subheader("Tracking Project Logs and Monitoring Training Metrics")
+    '''
+    WandB (https://wandb.ai) is a great tool for tracking Data Science project and monitoring training metrics. 
+    YOLOv5 now comes with a native Weights & Biases integration that tracks model pipelines – including model
+    performance, hyperparameters, GPU usage, predictions, and datasets. The YOLO-V5 model training was tracked using
+    WandB and the link is given below: 
+    '''
+    st.markdown(
+        '[This Project Experiment Logs 🔗](https://wandb.ai/aimagic/sansan-business-card-recognition/runs/2a8sztxh/overview?workspace=user-aimagic)')
+    '''
+    The detection was done for 9 labels on Japanese Business Card Images- 'company_name','full_name','position_name','address','phone_number','fax','mobile','email','url'
+    using Yolo-V5 model  
+    '''
+
+    st.image(config['result']['metrics_gif_path'])
 
     # Project Artifacts Downloads
     st.subheader("Download Project Artifacts")
@@ -116,10 +132,7 @@ if nav_option == "Home":
                                             "Best Yolo-V5 Model",
                                             "Japanese OCR model"])
 
-    if download_option == "Show Training Logs":
-        st.markdown('[Complete Training Logs (click here 🔗).](https://wandb.ai/aimagic/sansan-business-card-recognition/runs/2a8sztxh/overview?workspace=user-aimagic)')
-
-    elif download_option == "Jupyter Notebook: Read, Process and Train YOLO-V5 model":
+    if download_option == "Jupyter Notebook: Read, Process and Train YOLO-V5 model":
         download_file_name = config['downloads']['jupyter_notebook']
         with open(download_file_name, "rb") as file:
             st.download_button(label="Download", data=file, file_name="read_process_and_train.ipynb")
