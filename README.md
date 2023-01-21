@@ -1,5 +1,5 @@
-# Project Title 
-Japanese Business Card Recognition and OCR
+# Revolutionizing Japanese Business Card Management with YoloV5 and OCR: Automated Fragmentation and Label Recognition
+
 ![image](https://user-images.githubusercontent.com/21255010/213827783-048d6516-8a4d-441a-a9e6-51f249b957e9.png)
 
 ## Description
@@ -28,4 +28,12 @@ Evaluation Results for each label from Business Card Images
 ![](https://shubh2016shiv-japanese-business-card-recognition-ocr-app-o2j5tk.streamlit.app/~/+/media/a5efe58af02f23ff0ebe75615b0dd413ff8cc288be2804724dc38182.gif)
 
 ## Quick Demo
+
+Here is the quick demo of the project
 ![](https://github.com/shubh2016shiv/japanese_business_card_recognition_ocr/blob/main/resources/Japanese%20Business%20Card%20Fragmentation%20and%20Label%20Detection-2.gif)
+
+## Web-Application 
+
+**Click on Below icon for opening web application demonstration**
+
+[![streamlit](https://shubh2016shiv-japanese-business-card-recognition-ocr-app-o2j5tk.streamlit.app/)
