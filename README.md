@@ -27,3 +27,5 @@ Evaluation Results for each label from Business Card Images
 
 ![](https://shubh2016shiv-japanese-business-card-recognition-ocr-app-o2j5tk.streamlit.app/~/+/media/a5efe58af02f23ff0ebe75615b0dd413ff8cc288be2804724dc38182.gif)
 
+## Quick Demo
+![](https://github.com/shubh2016shiv/japanese_business_card_recognition_ocr/blob/main/resources/Japanese%20Business%20Card%20Fragmentation%20and%20Label%20Detection-2.gif)
