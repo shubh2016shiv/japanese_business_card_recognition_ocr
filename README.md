@@ -34,6 +34,6 @@ Here is the quick demo of the project
 
 ## Web-Application 
 
-**Click on Below icon for opening web application demonstration**
+**Click on Below icon for opening web application for this project**
 
-[![streamlit](https://shubh2016shiv-japanese-business-card-recognition-ocr-app-o2j5tk.streamlit.app/)
+[![streamlit](https://th.bing.com/th/id/OIP.hiunGrftVRVZAE3IJXUMowHaEb?pid=ImgDet&rs=1)](https://shubh2016shiv-japanese-business-card-recognition-ocr-app-o2j5tk.streamlit.app/)
