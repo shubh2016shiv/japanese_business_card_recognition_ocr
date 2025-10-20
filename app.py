@@ -107,7 +107,7 @@ def safe_display_image(image_path, error_message="Image not available"):
 
 if nav_option == "Home":
     st.subheader("Challenge presented by Sansan Global PTE. LTD. to Recognize labellings on Japanese business card.")
-    st.image(config['resources']['project_title_img'], width='content')
+    safe_display_image(config['resources']['project_title_img'], "Project title image not available")
     st.write("----")
     st.subheader("Business Problem")
     with open(config['resources']['project_objective'], 'r', encoding='utf-8') as obj_file:

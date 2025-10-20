@@ -11,7 +11,28 @@ import os
 import sys
 from pathlib import Path
 
-import cv2
+# Debug OpenCV import
+print("Python path:", sys.path)
+print("Available modules:", [m for m in sys.modules.keys() if 'cv' in m.lower()])
+
+try:
+    import cv2
+    print("OpenCV imported successfully, version:", cv2.__version__)
+except ImportError as e:
+    print("OpenCV import failed:", str(e))
+    print("Trying alternative import methods...")
+    
+    # Try different import methods
+    try:
+        import cv2.cv2 as cv2
+        print("OpenCV imported via cv2.cv2")
+    except ImportError:
+        try:
+            from cv2 import cv2
+            print("OpenCV imported via from cv2 import cv2")
+        except ImportError:
+            print("All OpenCV import methods failed")
+            raise e
 import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
