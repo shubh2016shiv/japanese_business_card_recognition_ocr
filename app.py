@@ -89,12 +89,24 @@ def write_json(target_path, target_file, data):
             raise
     with open(os.path.join(target_path, target_file), 'w') as f:
         json.dump(data, f)    
+
+def safe_display_image(image_path, error_message="Image not available"):
+    """
+    Safely display an image with existence check.
+    Returns True if image was displayed, False otherwise.
+    """
+    if os.path.exists(image_path):
+        st.image(image_path)
+        return True
+    else:
+        st.caption(f"⚠️ {error_message}")
+        return False
     
 ##################################################################
 
 if nav_option == "Home":
     st.subheader("Challenge presented by Sansan Global PTE. LTD. to Recognize labellings on Japanese business card.")
-    st.image(config['resources']['project_title_img'], use_container_width=False)
+    st.image(config['resources']['project_title_img'], width='content')
     st.write("----")
     st.subheader("Business Problem")
     with open(config['resources']['project_objective'], 'r', encoding='utf-8') as obj_file:
@@ -220,7 +232,14 @@ elif nav_option == "Detect and Fragment Labels":
             p.wait()
             p.terminate()
         st.subheader("Detected Labels and their Scores")
-        st.image(config['result']['labelled_img'])
+        # Defensive check: Verify detection results exist before displaying
+        labelled_img_path = config['result']['labelled_img']
+        if os.path.exists(labelled_img_path):
+            st.image(labelled_img_path)
+            st.success("✅ Detection completed successfully!")
+        else:
+            st.error("❌ Detection failed. The detection process did not generate results. Please try again or check the image format.")
+            st.info("💡 Tip: Make sure you have uploaded or selected a business card image first.")
 
 elif nav_option == "Perform Japanese OCR":
     st.write("-"*10)
@@ -275,7 +294,12 @@ elif nav_option == "Perform Japanese OCR":
         elif extracted_label == "URL":
             fragment = extracted_label_imgs[8]
         
-        st.image(fragment)
+        # Defensive check: Verify fragment exists before displaying
+        if os.path.exists(fragment):
+            st.image(fragment)
+        else:
+            st.warning(f"⚠️ Fragment image not found: {extracted_label}")
+            st.info("This label may not have been detected in the business card. Try detecting labels again.")
         st.sidebar.info("Japanese text formatting options")
         ja_font = st.sidebar.radio(label="Japanese Fonts",options=['游明朝','Yu Gothic','Yu Mincho','游ゴシック'])
         font_size = st.sidebar.slider(label="Font Size (px)", min_value=30,max_value=50,value=40,step=1)
@@ -317,44 +341,74 @@ elif nav_option == "Perform Japanese OCR":
                 urlExpander = st.expander("Expand to reveal detected URL as text and cropped image")
 
             with labelExpander:
-                st.image(config['result']['labelled_img'])
+                safe_display_image(
+                    config['result']['labelled_img'],
+                    "Detection result image not available"
+                )
 
             with fullNameExpander:
                 text = f'''<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{recognizedLabels['fullName']}</p>'''
                 st.markdown(text, unsafe_allow_html=True)
-                st.image(config['result']['crop_full_name'])
+                safe_display_image(
+                    config['result']['crop_full_name'],
+                    "Full name fragment not detected"
+                )
             with companyNameExpander:
                 text = f'''<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{recognizedLabels['companyName']}</p>'''
                 st.markdown(text, unsafe_allow_html=True)
-                st.image(config['result']['crop_company_name'])
+                safe_display_image(
+                    config['result']['crop_company_name'],
+                    "Company name fragment not detected"
+                )
             with positionExpander:
                 text = f'''<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{recognizedLabels['positionName']}</p>'''
                 st.markdown(text, unsafe_allow_html=True)
-                st.image(config['result']['crop_position_name'])
+                safe_display_image(
+                    config['result']['crop_position_name'],
+                    "Position fragment not detected"
+                )
             with addressExpander:
                 text = f'''<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{recognizedLabels['address']}</p>'''
                 st.markdown(text, unsafe_allow_html=True)
-                st.image(config['result']['crop_address'])
+                safe_display_image(
+                    config['result']['crop_address'],
+                    "Address fragment not detected"
+                )
             with mobileExpander:
                 text = f'''<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{recognizedLabels['mobile']}</p>'''
                 st.markdown(text, unsafe_allow_html=True)
-                st.image(config['result']['crop_mobile'])
+                safe_display_image(
+                    config['result']['crop_mobile'],
+                    "Mobile fragment not detected"
+                )
             with phoneNumberExpander:
                 text = f'''<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{recognizedLabels['phoneNumber']}</p>'''
                 st.markdown(text, unsafe_allow_html=True)
-                st.image(config['result']['crop_phone_no'])
+                safe_display_image(
+                    config['result']['crop_phone_no'],
+                    "Phone number fragment not detected"
+                )
             with emailExpander:
                 text = f'''<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{recognizedLabels['email']}</p>'''
                 st.markdown(text, unsafe_allow_html=True)
-                st.image(config['result']['crop_email'])
+                safe_display_image(
+                    config['result']['crop_email'],
+                    "Email fragment not detected"
+                )
             with faxExpander:
                 text = f'''<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{recognizedLabels['fax']}</p>'''
                 st.markdown(text, unsafe_allow_html=True)
-                st.image(config['result']['crop_fax'])
+                safe_display_image(
+                    config['result']['crop_fax'],
+                    "Fax fragment not detected"
+                )
             with urlExpander:
                 text = f'''<p style="font-family:{ja_font}; color:Green; font-size: {font_size}px;">{recognizedLabels['url']}</p>'''
                 st.markdown(text, unsafe_allow_html=True)
-                st.image(config['result']['crop_url'])
+                safe_display_image(
+                    config['result']['crop_url'],
+                    "URL fragment not detected"
+                )
                 
             jsonExpander = st.expander("Show and Download the results in JSON",expanded=True)
 
