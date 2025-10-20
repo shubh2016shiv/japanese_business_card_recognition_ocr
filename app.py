@@ -12,6 +12,7 @@ from skimage import io
 import gc
 from japaneseOCR import JapaneseOCR
 import json
+import cv2  # Ensure OpenCV is imported in main app
 
 st.set_page_config(layout="wide")
 st.title("Project - Business Card Recognition Challenge")
