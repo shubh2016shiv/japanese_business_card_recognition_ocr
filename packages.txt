@@ -4,9 +4,3 @@ libsm6
 libxext6
 libxrender-dev
 libgomp1
-libgtk-3-0
-libavcodec-dev
-libavformat-dev
-libswscale-dev
-freeglut3-dev
-libgtk2.0-dev
