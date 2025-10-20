@@ -1,0 +1,3 @@
+# UV configuration file
+[uv]
+python = "3.11"

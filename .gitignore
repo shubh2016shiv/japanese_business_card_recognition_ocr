@@ -1,0 +1,69 @@
+# Python
+__pycache__/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+.ENV/
+
+# UV package manager
+.uv/
+
+# IDE and Editor files
+.vscode/
+.idea/
+
+
+# YOLOv5 detection results (generated during runtime)
+runs/
+
+# Temporary business card uploads and processing
+resources/download/
+resources/json_result/
+
+
+# Streamlit secrets (if any)
+.streamlit/secrets.toml
+
+# Model files that are downloaded (but keep trained models)
+# Note: resources/yolo_model_weights/best.pt is kept as it's the trained model
+# resources/download/ocr_model/ files are excluded as they can be re-downloaded
+
+# Backup files
+*.bak
+*.backup
+
+# Configuration files with sensitive data (if any)
+# config.ini is kept as it's part of the project configuration
+
+# Documentation that gets generated
+# DEPLOYMENT.md is kept as it contains deployment instructions
+
+# Keep these important project files
+!README.md
+!README_UV.md
+!DEPLOYMENT.md
+!requirements.txt
+!pyproject.toml
+!packages.txt
+!.streamlit/config.toml
+!config.ini
+
+# Keep the trained model
+!resources/yolo_model_weights/best.pt
+
+# Keep training results and notebooks
+!resources/train_results/
+!resources/notebook/
+
+# Keep sample data and configuration files
+!resources/business_objective.txt
+!resources/sampleJSON_ResultsFormat.json
+!resources/test_image/allBusinessCardImgIDs.txt
+!resources/test_image/zipFileLinkID.txt
+!resources/positionReference.png
+!resources/problemStatementImg.png
+!resources/result.gif
+!resources/Japanese\ Business\ Card\ Fragmentation\ and\ Label\ Detection-2.gif

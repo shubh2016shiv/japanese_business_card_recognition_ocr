@@ -38,7 +38,7 @@ def prepareImageForTesting(file, imagePath=None):
         os.mkdir(config['resources']['detection_folder'] + "businessCard/")
     image.save(config['resources']['detection_folder'] + "businessCard/businessCard.png")
     
-@st.experimental_singleton
+@st.cache_resource
 def get_ocr_model(ocr_path):
     reader = easyocr.Reader(['en', 'ja'], model_storage_directory=ocr_path,gpu=False,quantize=False,download_enabled=False)
     return reader
@@ -94,7 +94,7 @@ def write_json(target_path, target_file, data):
 
 if nav_option == "Home":
     st.subheader("Challenge presented by Sansan Global PTE. LTD. to Recognize labellings on Japanese business card.")
-    st.image(config['resources']['project_title_img'], use_column_width=False)
+    st.image(config['resources']['project_title_img'], use_container_width=False)
     st.write("----")
     st.subheader("Business Problem")
     with open(config['resources']['project_objective'], 'r', encoding='utf-8') as obj_file:
@@ -215,7 +215,7 @@ elif nav_option == "Detect and Fragment Labels":
             if os.path.isdir('./runs'):
                 shutil.rmtree("./runs")
 
-            detectCommand = "/home/appuser/venv/bin/python ./detect.py --weights ./resources/yolo_model_weights/best.pt --source ./resources/test_image/businessCard/ --img 512 --conf 0.6 --save-crop --save-conf --line-thickness 2 --iou-thres 0.5 --save-txt --name results"
+            detectCommand = "python detect.py --weights ./resources/yolo_model_weights/best.pt --source ./resources/test_image/businessCard/ --img 512 --conf 0.6 --save-crop --save-conf --line-thickness 2 --iou-thres 0.5 --save-txt --name results"
             p = subprocess.Popen(detectCommand, stdout=subprocess.PIPE, shell=True)
             p.wait()
             p.terminate()
